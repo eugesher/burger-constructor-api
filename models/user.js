@@ -8,11 +8,11 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: validator.isEmail,
   },
-  password: {
-    type: String,
-    required: true,
-    select: false,
-  },
+  // password: {
+  //   type: String,
+  //   required: true,
+  //   select: false,
+  // },
 });
 
 module.exports = mongoose.model('user', userSchema);
