@@ -1,7 +1,6 @@
-import { getPrice, setName, setPrice } from '../utils';
-
 const mongoose = require('mongoose');
-const validator = require('validator');
+
+const { getPrice, setName, setPrice } = require('../utils');
 
 const bunSchema = new mongoose.Schema({
   name: {
@@ -10,10 +9,9 @@ const bunSchema = new mongoose.Schema({
     unique: true,
     set: setName,
   },
-  availableQuantity: {
+  quantity: {
     type: Number,
     required: true,
-    validate: validator.isInt,
   },
   price: {
     type: Number,
@@ -21,6 +19,6 @@ const bunSchema = new mongoose.Schema({
     get: getPrice,
     set: setPrice,
   },
-});
+}, { toJSON: { getters: true } });
 
 module.exports = mongoose.model('bun', bunSchema);

@@ -1,11 +1,13 @@
-export function getPrice(value) {
-  return (value / 100).toFixed(2);
+function getPrice(value) {
+  return `RUB ${(value / 100).toFixed(2)}`;
 }
 
-export function setPrice(value) {
+function setPrice(value) {
   return value * 100;
 }
 
-export function setName(value) {
+function setName(value) {
   return value.trim().toLowerCase();
 }
+
+module.exports = { getPrice, setPrice, setName };

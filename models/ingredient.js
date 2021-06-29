@@ -1,8 +1,8 @@
-import { setName } from '../utils';
-
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { getPrice, setPrice } = require('../utils');
+
+const { setName } = require('../utils');
 
 const ingredientSchema = new mongoose.Schema({
   name: {
@@ -15,7 +15,7 @@ const ingredientSchema = new mongoose.Schema({
     type: String,
     enum: ['cutlet', 'vegetable', 'sauce', 'other'],
   },
-  availableQuantity: {
+  quantity: {
     type: Number,
     required: true,
     validate: validator.isInt,
