@@ -6,10 +6,14 @@ const ingredientSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  quantity: {
+  availableQuantity: {
     type: Number,
     required: true,
     validate: validator.isInt,
+  },
+  price: {
+    type: Number,
+    required: true,
   },
 });
 
