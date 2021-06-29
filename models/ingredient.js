@@ -6,6 +6,10 @@ const ingredientSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  category: {
+    type: String,
+    enum: ['cutlet', 'vegetable', 'sauce', 'other'],
+  },
   availableQuantity: {
     type: Number,
     required: true,
