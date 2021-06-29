@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { getPrice, setPrice } = require('../utils');
 
 const ingredientSchema = new mongoose.Schema({
   name: {
@@ -18,6 +19,8 @@ const ingredientSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true,
+    get: getPrice,
+    set: setPrice,
   },
 });
 
