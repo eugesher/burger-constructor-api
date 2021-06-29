@@ -1,3 +1,5 @@
+import { setName } from '../utils';
+
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { getPrice, setPrice } = require('../utils');
@@ -6,6 +8,8 @@ const ingredientSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
+    set: setName,
   },
   category: {
     type: String,

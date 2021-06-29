@@ -1,4 +1,4 @@
-import { getPrice, setPrice } from '../utils';
+import { getPrice, setName, setPrice } from '../utils';
 
 const mongoose = require('mongoose');
 const validator = require('validator');
@@ -8,7 +8,7 @@ const bunSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    set: (value) => value.toLowerCase(),
+    set: setName,
   },
   availableQuantity: {
     type: Number,

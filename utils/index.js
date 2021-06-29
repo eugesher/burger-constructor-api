@@ -5,3 +5,7 @@ export function getPrice(value) {
 export function setPrice(value) {
   return value * 100;
 }
+
+export function setName(value) {
+  return value.trim().toLowerCase();
+}
