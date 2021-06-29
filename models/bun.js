@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-const ingredientSchema = new mongoose.Schema({
+const bunSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -13,4 +13,4 @@ const ingredientSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('ingredient', ingredientSchema);
+module.exports = mongoose.model('bun', bunSchema);
