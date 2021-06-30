@@ -1,5 +1,7 @@
+const schemaOptions = { toJSON: { getters: true }, id: false };
+
 function getPrice(value) {
-  return `RUB ${(value / 100).toFixed(2)}`;
+  return Number((value / 100).toFixed(2));
 }
 
 function setPrice(value) {
@@ -10,4 +12,6 @@ function setName(value) {
   return value.trim().toLowerCase();
 }
 
-module.exports = { getPrice, setPrice, setName };
+module.exports = {
+  schemaOptions, getPrice, setPrice, setName,
+};

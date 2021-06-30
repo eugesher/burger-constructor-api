@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
+  price: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('burger', userSchema);

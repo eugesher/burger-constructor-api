@@ -10,16 +10,12 @@ module.exports.saveBurger = (req, res) => {
     bun: req.body.bun,
     filling: req.body.filling,
     owner: req.user._id,
+    price: req.body.price,
   })
     .then((burger) => res.send(burger));
 };
 
 module.exports.deleteBurger = (req, res) => {
-  const { burgerId } = req.params;
-  Burger.findById(burgerId)
-    .then(() => {
-      Burger.findByIdAndRemove(burgerId).then((removedBurger) => {
-        res.send(removedBurger);
-      });
-    });
+  Burger.findByIdAndRemove(req.params.burgerId)
+    .then((removedBurger) => res.send(removedBurger));
 };
