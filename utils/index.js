@@ -1,4 +1,5 @@
 const schemaOptions = { toJSON: { getters: true }, id: false };
+const ingredientCategories = ['buns', 'cutlets', 'vegetables', 'sauces'];
 
 function getPrice(value) {
   return Number((value / 100).toFixed(2));
@@ -13,5 +14,5 @@ function setName(value) {
 }
 
 module.exports = {
-  schemaOptions, getPrice, setPrice, setName,
+  schemaOptions, ingredientCategories, getPrice, setPrice, setName,
 };

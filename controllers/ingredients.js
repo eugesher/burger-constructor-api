@@ -1,7 +1,7 @@
 const Ingredient = require('../models/ingredient');
 
-module.exports.getIngredients = (req, res) => {
-  Ingredient.find()
+module.exports.getIngredients = (req, res, category = '') => {
+  Ingredient.find(category ? { category } : {})
     .then((ingredients) => res.send(ingredients));
 };
 
