@@ -5,7 +5,6 @@ const {
 } = require('../controllers/ingredients');
 const { ingredientCategories } = require('../utils');
 
-// noinspection JSCheckFunctionSignatures
 router.get('/', getIngredients);
 router.post('/', addNewIngredient);
 router.patch('/:ingredientId', setIngredientsQuantity);
