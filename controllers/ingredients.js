@@ -1,8 +1,8 @@
 const Ingredient = require('../models/ingredient');
 
-module.exports.getIngredients = (req, res) => {
-  Ingredient.find()
-    .then((ingredients) => res.send(ingredients));
+module.exports.getIngredients = (req, res, { category }) => {
+  Ingredient.find(category ? { category } : {})
+    .then((ingredients) => res.json(ingredients));
 };
 
 module.exports.addNewIngredient = (req, res) => {
@@ -12,15 +12,15 @@ module.exports.addNewIngredient = (req, res) => {
     quantity: req.body.quantity,
     price: req.body.price,
   })
-    .then((ingredient) => res.send(ingredient));
+    .then((ingredient) => res.json(ingredient));
 };
 
 module.exports.removeIngredient = (req, res) => {
   Ingredient.findByIdAndRemove(req.params.ingredientId)
-    .then((removedIngredient) => res.send(removedIngredient));
+    .then((removedIngredient) => res.json(removedIngredient));
 };
 
 module.exports.setIngredientsQuantity = (req, res) => {
   Ingredient.findByIdAndUpdate(req.ingredient._id, { quantity: req.body.quantity }, { new: true })
-    .then((ingredient) => res.send(ingredient));
+    .then((ingredient) => res.json(ingredient));
 };
