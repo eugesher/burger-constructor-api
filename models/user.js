@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
+const { Schema, model } = require('mongoose');
+const { isEmail } = require('validator');
 
 const { schemaOptions } = require('../utils');
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   email: {
     type: String,
     required: true,
     unique: true,
-    validate: validator.isEmail,
+    validate: isEmail,
   },
   // password: {
   //   type: String,
@@ -17,4 +17,4 @@ const userSchema = new mongoose.Schema({
   // },
 }, schemaOptions);
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = model('user', userSchema);

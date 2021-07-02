@@ -1,12 +1,14 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 const {
   schemaOptions, ingredientCategories, setName, getPrice, setPrice,
 } = require('../utils');
 
-const ingredientSchema = new mongoose.Schema({
+const ingredientSchema = new Schema({
   name: {
     type: String,
+    minlength: 2,
+    maxlength: 100,
     required: true,
     unique: true,
     set: setName,
@@ -27,4 +29,4 @@ const ingredientSchema = new mongoose.Schema({
   },
 }, schemaOptions);
 
-module.exports = mongoose.model('ingredient', ingredientSchema);
+module.exports = model('ingredient', ingredientSchema);

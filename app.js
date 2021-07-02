@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const { json, urlencoded } = require('body-parser');
 
 const { temporaryUserHandler } = require('./utils');
 const router = require('./routes');
@@ -17,8 +17,8 @@ mongoose.connect('mongodb://localhost:27017/burgersdb', {
   useUnifiedTopology: true,
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(json());
+app.use(urlencoded({ extended: true }));
 app.use(temporaryUserHandler);
 app.use(router);
 app.use((req, res, next) => next(new NotFoundError('not found')));

@@ -13,13 +13,23 @@ function getPrice(value) {
 }
 
 function setPrice(value) {
-  return value * 100;
+  return Math.ceil(value * 100);
 }
 
 function setName(value) {
   return value.trim().toLowerCase();
 }
 
+function concatenateErrorMessages(err) {
+  return Object.values(err.errors).map((e) => e.message).join('. ');
+}
+
 module.exports = {
-  schemaOptions, ingredientCategories, temporaryUserHandler, getPrice, setPrice, setName,
+  schemaOptions,
+  ingredientCategories,
+  temporaryUserHandler,
+  getPrice,
+  setPrice,
+  setName,
+  concatenateErrorMessages,
 };
