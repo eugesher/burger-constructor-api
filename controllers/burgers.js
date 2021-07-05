@@ -1,6 +1,7 @@
 const Burger = require('../models/burger');
 const BadRequestError = require('../erorrs/bad-request-error');
-const { concatenateErrorMessages } = require('../utils');
+const ForbiddenError = require('../erorrs/forbidden-error');
+const NotFoundError = require('../erorrs/not-found-error');
 
 module.exports.getBurgers = (req, res, next) => {
   const owner = req.user._id;
@@ -22,11 +23,25 @@ module.exports.saveBurger = (req, res, next) => {
 };
 
 module.exports.deleteBurger = (req, res, next) => {
-  Burger.findByIdAndRemove(req.params.burgerId)
-    .then((removedBurger) => res.json(removedBurger))
+  const { burgerId } = req.params;
+  const userId = req.user._id;
+
+  Burger.findById(burgerId)
+    .then((burger) => {
+      if (burger) {
+        if (burger.owner.equals(userId)) {
+          Burger.findByIdAndRemove(burgerId)
+            .then((removedBurger) => res.send(removedBurger));
+        } else {
+          throw new ForbiddenError('only your burgers are allowed to delete');
+        }
+      } else {
+        throw new NotFoundError('burger not found');
+      }
+    })
     .catch((err) => next(
-      err.name === 'ValidationError'
-        ? new BadRequestError(concatenateErrorMessages(err))
+      err.kind === 'ObjectId'
+        ? new BadRequestError('invalid burger id')
         : err,
     ));
 };
