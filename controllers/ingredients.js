@@ -37,7 +37,7 @@ module.exports.removeIngredient = (req, res, next) => {
     })
     .catch((err) => next(
       err.kind === 'ObjectId'
-        ? new BadRequestError(concatenateErrorMessages(err))
+        ? new BadRequestError('invalid ingredient id')
         : err,
     ));
 };
