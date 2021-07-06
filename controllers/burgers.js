@@ -21,6 +21,7 @@ module.exports.saveBurger = (req, res, next) => {
   function validateBurgerComposition() {
     const bunsLength = ingredients.filter((i) => i.category === 'buns').length;
     const cutletsLength = ingredients.filter((i) => i.category === 'cutlets').length;
+    const cheesesLength = ingredients.filter((i) => i.category === 'cheeses').length;
     const vegetablesLength = ingredients.filter((i) => i.category === 'vegetables').length;
     const saucesLength = ingredients.filter((i) => i.category === 'sauces').length;
 
@@ -33,11 +34,14 @@ module.exports.saveBurger = (req, res, next) => {
     if (cutletsLength > 2) {
       throw new BadRequestError('burger should not contain more than 2 cutlets');
     }
+    if (cheesesLength > 2) {
+      throw new BadRequestError('burger should not contain more than 2 servings of cheese');
+    }
     if (vegetablesLength > 3) {
-      throw new BadRequestError('burger should not contain more than 3 servings of vegetables');
+      throw new BadRequestError('burger should not contain more than 3 servings of vegetable');
     }
     if (saucesLength > 3) {
-      throw new BadRequestError('burger should not contain more than 3 servings of sauces');
+      throw new BadRequestError('burger should not contain more than 3 servings of sauce');
     }
   }
 

@@ -1,5 +1,4 @@
 const schemaOptions = { toJSON: { getters: true }, id: false };
-const ingredientCategories = ['buns', 'cutlets', 'vegetables', 'sauces'];
 
 const temporaryUserHandler = (req, res, next) => {
   req.user = {
@@ -26,7 +25,6 @@ function concatenateErrorMessages(err) {
 
 module.exports = {
   schemaOptions,
-  ingredientCategories,
   temporaryUserHandler,
   getPrice,
   setPrice,
