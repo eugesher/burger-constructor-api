@@ -18,28 +18,55 @@ module.exports.saveBurger = (req, res, next) => {
   const { name, ingredients } = req.body;
   const owner = req.user._id;
 
-  Ingredient.find({ _id: { $in: ingredients } })
-    .then((burgerIngredients) => {
-      if (!(burgerIngredients.length === ingredients.length)) {
-        throw new BadRequestError('some ingredients not found');
-      }
-      return burgerIngredients.reduce((sum, current) => sum + current.price, 0);
-    })
+  function validateBurgerComposition() {
+    const bunsLength = ingredients.filter((i) => i.category === 'buns').length;
+    const cutletsLength = ingredients.filter((i) => i.category === 'cutlets').length;
+    const vegetablesLength = ingredients.filter((i) => i.category === 'vegetables').length;
+    const saucesLength = ingredients.filter((i) => i.category === 'sauces').length;
+
+    if (!bunsLength) {
+      throw new BadRequestError('burger must contain a bun');
+    }
+    if (bunsLength > 1) {
+      throw new BadRequestError('there should only be one bun in a burger');
+    }
+    if (cutletsLength > 2) {
+      throw new BadRequestError('burger should not contain more than 2 cutlets');
+    }
+    if (vegetablesLength > 3) {
+      throw new BadRequestError('burger should not contain more than 3 servings of vegetables');
+    }
+    if (saucesLength > 3) {
+      throw new BadRequestError('burger should not contain more than 3 servings of sauces');
+    }
+  }
+
+  function calculateBurgerPrice() {
+    return Ingredient.find({ _id: { $in: ingredients } })
+      .then((foundIngredients) => {
+        if (foundIngredients.length !== ingredients.length) {
+          throw new BadRequestError('some ingredients not found');
+        }
+        validateBurgerComposition();
+        return foundIngredients.reduce((sum, current) => sum + current.price, 0);
+      });
+  }
+
+  calculateBurgerPrice()
     .then((price) => {
       Burger.create({
-        name, ingredients, price, owner,
+        name,
+        ingredients,
+        price,
+        owner,
       })
         .then((burger) => res.json(burger))
         .catch(next);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError(concatenateErrorMessages(err)));
-      } else if (err.kind === 'ObjectId') {
-        next(new BadRequestError('invalid ingredients id'));
-      } else {
-        next(err);
-      }
+      if (err.name === 'ValidationError') next(new BadRequestError(concatenateErrorMessages(err)));
+      else if (err.kind === 'ObjectId') next(new BadRequestError('invalid ingredients id'));
+      else next(err);
     });
 };
 
