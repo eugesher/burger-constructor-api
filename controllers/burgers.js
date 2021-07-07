@@ -20,11 +20,13 @@ module.exports.saveBurger = (req, res, next) => {
 
   function calculateBurgerPrice() {
     return Ingredient.find({ _id: { $in: ingredients } }).then((foundIngredients) => {
-      const burgerIngredients = ingredients.map((i) => foundIngredients.find((fi) => {
-        const match = String(fi._id) === i;
-        if (!match) throw new BadRequestError('some ingredients not found');
-        return match;
-      }));
+      const burgerIngredients = ingredients.map(
+        (i) => foundIngredients.find((fi) => String(fi._id) === i),
+      );
+
+      burgerIngredients.forEach((item) => {
+        if (typeof item === 'undefined') throw new BadRequestError('some ingredients not found');
+      });
       validateBurgerComposition(burgerIngredients);
       return burgerIngredients.reduce((sum, current) => sum + current.price, 0);
     });
@@ -38,8 +40,7 @@ module.exports.saveBurger = (req, res, next) => {
         price,
         owner,
       })
-        .then((burger) => res.json(burger))
-        .catch(next);
+        .then((burger) => res.json(burger));
     })
     .catch((err) => {
       if (err.name === 'ValidationError') next(new BadRequestError(concatenateErrorMessages(err)));
