@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const { ObjectId } = Schema.Types;
 
-const userSchema = new Schema({
+const schema = new Schema({
   name: {
     type: String,
     minlength: 2,
@@ -24,4 +24,4 @@ const userSchema = new Schema({
   },
 });
 
-module.exports = model('burger', userSchema);
+module.exports = model('burger', schema);

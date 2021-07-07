@@ -4,7 +4,7 @@ const {
   schemaOptions, setName, getPrice, setPrice,
 } = require('../utils');
 
-const ingredientSchema = new Schema({
+const schema = new Schema({
   name: {
     type: String,
     minlength: 2,
@@ -29,4 +29,4 @@ const ingredientSchema = new Schema({
   },
 }, schemaOptions);
 
-module.exports = model('ingredient', ingredientSchema);
+module.exports = model('ingredient', schema);

@@ -3,7 +3,7 @@ const { isEmail } = require('validator');
 
 const { schemaOptions } = require('../utils');
 
-const userSchema = new Schema({
+const schema = new Schema({
   email: {
     type: String,
     required: true,
@@ -17,4 +17,4 @@ const userSchema = new Schema({
   // },
 }, schemaOptions);
 
-module.exports = model('user', userSchema);
+module.exports = model('user', schema);
