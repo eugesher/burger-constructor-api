@@ -57,7 +57,7 @@ module.exports.deleteBurger = (req, res, next) => {
     .then((burger) => {
       if (burger) {
         if (burger.owner.equals(userId)) {
-          Burger.findByIdAndRemove(burgerId).then((removedBurger) => res.send(removedBurger));
+          Burger.findByIdAndRemove(burgerId).then((removedBurger) => res.json(removedBurger));
         } else {
           throw new ForbiddenError('only your burgers are allowed to delete');
         }

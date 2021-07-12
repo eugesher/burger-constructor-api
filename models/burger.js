@@ -1,8 +1,6 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const { ObjectId } = Schema.Types;
-
-const schema = new Schema({
+const schema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 2,
@@ -10,7 +8,7 @@ const schema = new Schema({
     required: true,
   },
   ingredients: [{
-    type: ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'ingredient',
   }],
   price: {
@@ -18,10 +16,10 @@ const schema = new Schema({
     required: true,
   },
   owner: {
-    type: ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
   },
 });
 
-module.exports = model('burger', schema);
+module.exports = mongoose.model('burger', schema);

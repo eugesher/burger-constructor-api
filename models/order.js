@@ -1,10 +1,8 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const { ObjectId } = Schema.Types;
-
-const schema = new Schema({
+const schema = new mongoose.Schema({
   list: [{
-    type: ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'burger',
   }],
   price: {
@@ -12,10 +10,10 @@ const schema = new Schema({
     required: true,
   },
   owner: {
-    type: ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
   },
 });
 
-module.exports = model('order', schema);
+module.exports = mongoose.model('order', schema);

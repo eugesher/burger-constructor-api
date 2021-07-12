@@ -9,13 +9,6 @@ const burgerIngredientLimits = {
   sauces: 3,
 };
 
-const temporaryUserHandler = (req, res, next) => {
-  req.user = {
-    _id: '60d9e793860bfa3caa38d71f',
-  };
-  next();
-};
-
 function getPrice(value) {
   return Number((value / 100).toFixed(2));
 }
@@ -68,7 +61,6 @@ function validateBurgerComposition(burgerIngredients) {
 module.exports = {
   schemaOptions,
   burgerIngredientLimits,
-  temporaryUserHandler,
   getPrice,
   setPrice,
   setName,

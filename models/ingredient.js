@@ -1,10 +1,10 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
 const {
   schemaOptions, setName, getPrice, setPrice,
 } = require('../utils');
 
-const schema = new Schema({
+const schema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 2,
@@ -29,4 +29,4 @@ const schema = new Schema({
   },
 }, schemaOptions);
 
-module.exports = model('ingredient', schema);
+module.exports = mongoose.model('ingredient', schema);
