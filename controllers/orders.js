@@ -43,19 +43,24 @@ module.exports.makeOrder = (req, res, next) => {
     getIngredients(order)
       .then((ingredients) => {
         const ingredientsUsed = [...new Set(ingredients)].map((ingredient) => {
-          let count = 0;
+          let amount = 0;
           for (let i = 0; i < ingredients.length; i += 1) {
-            if (ingredients[i]._id === ingredient._id) count += 1;
+            if (ingredients[i]._id === ingredient._id) amount += 1;
           }
-          return { id: ingredient._id, quantity: ingredient.quantity, count };
+          return { id: ingredient._id, quantity: ingredient.quantity, amount };
         });
         const promises = [];
         ingredientsUsed.forEach((ingredient) => {
-          promises.push(
-            Ingredient.findByIdAndUpdate(
-              ingredient.id, { quantity: ingredient.quantity - ingredient.count },
-            ),
-          );
+          const quantity = ingredient.quantity - ingredient.amount;
+          if (quantity >= 0) {
+            promises.push(
+              Ingredient.findByIdAndUpdate(
+                ingredient.id, { quantity },
+              ),
+            );
+          } else {
+            throw new BadRequestError('not enough ingredients in stock');
+          }
         });
         Promise.all(promises);
       });
