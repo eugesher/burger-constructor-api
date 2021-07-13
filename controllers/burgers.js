@@ -1,9 +1,9 @@
 const Burger = require('../models/burger');
-const Ingredient = require('../models/ingredient');
 const BadRequestError = require('../erorrs/bad-request-error');
 const ForbiddenError = require('../erorrs/forbidden-error');
 const NotFoundError = require('../erorrs/not-found-error');
-const { concatenateErrorMessages, validateBurgerComposition } = require('../utils');
+const BurgerService = require('../services/BurgerService');
+const { concatenateErrorMessages } = require('../utils');
 
 module.exports.getBurgers = (req, res, next) => {
   const owner = req.user._id;
@@ -18,21 +18,7 @@ module.exports.saveBurger = (req, res, next) => {
   const { name, ingredients } = req.body;
   const owner = req.user._id;
 
-  function calculateBurgerPrice() {
-    return Ingredient.find({ _id: { $in: ingredients } }).then((foundIngredients) => {
-      const burgerIngredients = ingredients.map(
-        (i) => foundIngredients.find((fi) => String(fi._id) === i),
-      );
-
-      burgerIngredients.forEach((item) => {
-        if (typeof item === 'undefined') throw new BadRequestError('some ingredients not found');
-      });
-      validateBurgerComposition(burgerIngredients);
-      return burgerIngredients.reduce((sum, current) => sum + current.price, 0);
-    });
-  }
-
-  calculateBurgerPrice()
+  BurgerService.calculatePrice(ingredients)
     .then((price) => {
       Burger.create({
         name,
