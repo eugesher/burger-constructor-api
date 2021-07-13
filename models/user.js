@@ -25,14 +25,17 @@ const schema = new mongoose.Schema(
 function findUserByCredentials(email, password) {
   return this.findOne({ email })
     .select('+password')
-    .then((user) => (user
-      ? bcrypt.compare(password, user.password)
-      : Promise.reject(new UnauthorizedError('wrong email or password'))
-        .then((matched) => (matched
-          ? user
-          : Promise.reject(new UnauthorizedError('wrong email or password'))
-        ))
-    ));
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new UnauthorizedError('wrong email or password'));
+      }
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          return Promise.reject(new UnauthorizedError('wrong email or password'));
+        }
+        return user;
+      });
+    });
 }
 
 schema.statics = { findUserByCredentials };
