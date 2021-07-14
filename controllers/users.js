@@ -15,11 +15,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       if (user) res.json(user);
       else throw new NotFoundError('user not found');
     })
-    .catch((err) => next(
-      err.kind === 'ObjectId'
-        ? new BadRequestError('invalid user id')
-        : err,
-    ));
+    .catch((err) => next(err.kind === 'ObjectId' ? new BadRequestError('invalid user id') : err));
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -56,7 +52,8 @@ module.exports.createUser = (req, res, next) => {
     throw new BadRequestError('missing email or password ');
   }
 
-  bcrypt.hash(password, 8)
+  bcrypt
+    .hash(password, 8)
     .then((passwordHash) => User.create({
       email,
       password: passwordHash,

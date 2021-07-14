@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({
-  list: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'burger',
-  }],
+  list: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'burger',
+    },
+  ],
   price: {
     type: Number,
     required: true,

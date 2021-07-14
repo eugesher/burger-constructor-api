@@ -30,17 +30,18 @@ function validateBurgerComposition(burgerIngredients) {
 
 class BurgerService {
   static calculatePrice(ingredients) {
-    return Ingredient.find({ _id: { $in: ingredients } }).then((foundIngredients) => {
-      const burgerIngredients = ingredients.map(
-        (i) => foundIngredients.find((fi) => String(fi._id) === i),
-      );
+    return Ingredient.find({ _id: { $in: ingredients } })
+      .then((foundIngredients) => {
+        const burgerIngredients = ingredients.map(
+          (i) => foundIngredients.find((fi) => String(fi._id) === i),
+        );
 
-      burgerIngredients.forEach((item) => {
-        if (typeof item === 'undefined') throw new BadRequestError('some ingredients not found');
+        burgerIngredients.forEach((item) => {
+          if (typeof item === 'undefined') throw new BadRequestError('some ingredients not found');
+        });
+        validateBurgerComposition(burgerIngredients);
+        return burgerIngredients.reduce((sum, current) => sum + current.price, 0);
       });
-      validateBurgerComposition(burgerIngredients);
-      return burgerIngredients.reduce((sum, current) => sum + current.price, 0);
-    });
   }
 }
 

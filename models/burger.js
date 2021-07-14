@@ -7,10 +7,12 @@ const schema = new mongoose.Schema({
     maxlength: 100,
     required: true,
   },
-  ingredients: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ingredient',
-  }],
+  ingredients: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ingredient',
+    },
+  ],
   price: {
     type: Number,
     required: true,

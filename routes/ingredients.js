@@ -1,7 +1,10 @@
 const router = require('express').Router();
 
 const {
-  getIngredients, addNewIngredient, setIngredientsQuantity, removeIngredient,
+  getIngredients,
+  addNewIngredient,
+  setIngredientsQuantity,
+  removeIngredient,
 } = require('../controllers/ingredients');
 
 router.get('/', getIngredients);

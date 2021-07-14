@@ -20,7 +20,9 @@ function setName(value) {
 }
 
 function concatenateErrorMessages(err) {
-  return Object.values(err.errors).map((e) => e.message).join('. ');
+  return Object.values(err.errors)
+    .map((e) => e.message)
+    .join('. ');
 }
 
 module.exports = {

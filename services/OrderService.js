@@ -16,13 +16,14 @@ function getIngredients(order) {
 
 class OrderService {
   static calculatePrice(list) {
-    return Burger.find({ _id: { $in: list } }).then((foundBurgers) => {
-      const orderList = list.map((item) => foundBurgers.find((fb) => String(fb._id) === item));
-      orderList.forEach((item) => {
-        if (typeof item === 'undefined') throw new BadRequestError('some burgers not found');
+    return Burger.find({ _id: { $in: list } })
+      .then((foundBurgers) => {
+        const orderList = list.map((item) => foundBurgers.find((fb) => String(fb._id) === item));
+        orderList.forEach((item) => {
+          if (typeof item === 'undefined') throw new BadRequestError('some burgers not found');
+        });
+        return orderList.reduce((sum, current) => sum + current.price, 0);
       });
-      return orderList.reduce((sum, current) => sum + current.price, 0);
-    });
   }
 
   static updateStock(order) {
@@ -39,11 +40,7 @@ class OrderService {
         ingredientsUsed.forEach((ingredient) => {
           const quantity = ingredient.quantity - ingredient.amount;
           if (quantity >= 0) {
-            promises.push(
-              Ingredient.findByIdAndUpdate(
-                ingredient.id, { quantity },
-              ),
-            );
+            promises.push(Ingredient.findByIdAndUpdate(ingredient.id, { quantity }));
           } else {
             throw new BadRequestError('not enough ingredients in stock');
           }

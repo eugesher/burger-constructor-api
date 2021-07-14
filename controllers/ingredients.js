@@ -17,13 +17,14 @@ module.exports.addNewIngredient = (req, res, next) => {
   } = req.body;
 
   Ingredient.create({
-    name, category, quantity, price,
+    name,
+    category,
+    quantity,
+    price,
   })
     .then((ingredient) => res.json(ingredient))
     .catch((err) => next(
-      err.name === 'ValidationError'
-        ? new BadRequestError(concatenateErrorMessages(err))
-        : err,
+      err.name === 'ValidationError' ? new BadRequestError(concatenateErrorMessages(err)) : err,
     ));
 };
 
@@ -35,11 +36,7 @@ module.exports.removeIngredient = (req, res, next) => {
       if (removedIngredient) res.json(removedIngredient);
       else throw new BadRequestError('ingredient not found');
     })
-    .catch((err) => next(
-      err.kind === 'ObjectId'
-        ? new BadRequestError('invalid ingredient id')
-        : err,
-    ));
+    .catch((err) => next(err.kind === 'ObjectId' ? new BadRequestError('invalid ingredient id') : err));
 };
 
 module.exports.setIngredientsQuantity = (req, res, next) => {
@@ -49,8 +46,6 @@ module.exports.setIngredientsQuantity = (req, res, next) => {
   Ingredient.findByIdAndUpdate(ingredientId, { quantity }, { new: true })
     .then((ingredient) => res.json(ingredient))
     .catch((err) => next(
-      err.name === 'ValidationError'
-        ? new BadRequestError(concatenateErrorMessages(err))
-        : err,
+      err.name === 'ValidationError' ? new BadRequestError(concatenateErrorMessages(err)) : err,
     ));
 };
