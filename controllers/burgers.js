@@ -19,15 +19,10 @@ module.exports.saveBurger = (req, res, next) => {
   const owner = req.user._id;
 
   BurgerService.calculatePrice(ingredients)
-    .then((price) => {
-      Burger.create({
-        name,
-        ingredients,
-        price,
-        owner,
-      })
-        .then((burger) => res.json(burger));
-    })
+    .then((price) => Burger.create({
+      name, ingredients, price, owner,
+    }))
+    .then((burger) => res.json(burger))
     .catch((err) => {
       if (err.name === 'ValidationError') next(new BadRequestError(concatenateErrorMessages(err)));
       else if (err.kind === 'ObjectId') next(new BadRequestError('invalid ingredient ids'));
@@ -41,16 +36,10 @@ module.exports.deleteBurger = (req, res, next) => {
 
   Burger.findById(burgerId)
     .then((burger) => {
-      if (burger) {
-        if (burger.owner.equals(userId)) {
-          Burger.findByIdAndRemove(burgerId)
-            .then((removedBurger) => res.json(removedBurger));
-        } else {
-          throw new ForbiddenError('only your burgers are allowed to delete');
-        }
-      } else {
-        throw new NotFoundError('burger not found');
-      }
+      if (!burger) throw new NotFoundError('burger not found');
+      if (!burger.owner.equals(userId)) throw new ForbiddenError('only your burgers are allowed to delete');
+      return Burger.findByIdAndRemove(burgerId);
     })
+    .then((removedBurger) => res.json(removedBurger))
     .catch((err) => next(err.kind === 'ObjectId' ? new BadRequestError('invalid burger id') : err));
 };
