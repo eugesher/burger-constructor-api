@@ -1,4 +1,4 @@
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET, SALT_LENGTH } = process.env;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
@@ -53,10 +53,10 @@ module.exports.createUser = (req, res, next) => {
   }
 
   bcrypt
-    .hash(password, 8)
-    .then((passwordHash) => User.create({
+    .hash(password, Number(SALT_LENGTH))
+    .then((hashedPassword) => User.create({
       email,
-      password: passwordHash,
+      password: hashedPassword,
     }))
     .then((user) => {
       const u = user.toObject();
