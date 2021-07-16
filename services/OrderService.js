@@ -1,9 +1,23 @@
 const Burger = require('../models/burger');
 const Ingredient = require('../models/ingredient');
+const Order = require('../models/order');
 const BadRequestError = require('../erorrs/bad-request-error');
+const { concatenateErrorMessages: concatErrs } = require('../utils');
 
 class OrderService {
-  static getIngredients(list) {
+  constructor(res, next) {
+    this.res = res;
+    this.next = next;
+  }
+
+  findUserOrders(owner) {
+    return Order.find({ owner })
+      .populate('list')
+      .then((order) => this.res.json(order))
+      .catch(this.next);
+  }
+
+  getIngredients(list) {
     return Burger.find({ _id: { $in: list } })
       .populate('ingredients')
       .then((foundBurgers) => {
@@ -12,10 +26,13 @@ class OrderService {
           ingredients = [...ingredients, ...fb.ingredients];
         });
         return ingredients;
-      });
+      })
+      .catch((err) => this.next(
+        err.kind === 'ObjectId' ? new BadRequestError('invalid ingredient(s) id') : err,
+      ));
   }
 
-  static calculatePrice(list) {
+  calculatePrice(list) {
     return Burger.find({ _id: { $in: list } })
       .then((foundBurgers) => {
         const orderList = list.map((item) => foundBurgers.find((fb) => String(fb._id) === item));
@@ -23,10 +40,13 @@ class OrderService {
           if (typeof item === 'undefined') throw new BadRequestError('some burgers not found');
         });
         return orderList.reduce((sum, current) => sum + current.price, 0);
-      });
+      })
+      .catch((err) => this.next(
+        err.kind === 'ObjectId' ? new BadRequestError('invalid ingredient(s) id') : err,
+      ));
   }
 
-  static updateStock(ingredients) {
+  updateStock(ingredients) {
     const ingredientsUsed = [...new Set(ingredients)].map((ingredient) => {
       let amount = 0;
       for (let i = 0; i < ingredients.length; i += 1) {
@@ -43,7 +63,16 @@ class OrderService {
         throw new BadRequestError('not enough ingredients in stock');
       }
     });
-    Promise.all(promises);
+    Promise.all(promises)
+      .catch(this.next);
+  }
+
+  makeOrder(list, price, owner) {
+    Order.create({ list, price, owner })
+      .then((order) => this.res.json(order))
+      .catch((err) => this.next(
+        err.name === 'ValidationError' ? new BadRequestError(concatErrs(err)) : err,
+      ));
   }
 }
 
