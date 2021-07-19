@@ -13,7 +13,7 @@ module.exports.makeOrder = (req, res, next) => {
   const owner = req.user._id;
 
   service.getIngredients(list)
-    .then(service.updateStock)
+    .then((ingredients) => service.updateStock(ingredients))
     .then(() => service.calculatePrice(list))
     .then((price) => service.makeOrder(list, price, owner));
 };
