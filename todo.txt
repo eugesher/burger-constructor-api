@@ -1,2 +1,0 @@
-create superuser
-add 'bacon' category

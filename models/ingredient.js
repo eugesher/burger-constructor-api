@@ -16,7 +16,7 @@ const schema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['buns', 'cutlets', 'cheeses', 'vegetables', 'sauces'],
+      enum: ['buns', 'cutlets', 'cheeses', 'vegetables', 'sauces', 'bacon'],
     },
     quantity: {
       type: Number,

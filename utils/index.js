@@ -5,6 +5,7 @@ const burgerIngredientLimits = {
   cheeses: 3,
   vegetables: 3,
   sauces: 3,
+  bacon: 1,
 };
 
 function getPrice(value) {

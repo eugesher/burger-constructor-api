@@ -15,6 +15,7 @@ function validateBurgerComposition(burgerIngredients) {
   const isCheesesCorrect = categoryAmount('cheeses') <= limits.cheeses;
   const isVegetablesCorrect = categoryAmount('vegetables') <= limits.vegetables;
   const isSaucesCorrect = categoryAmount('sauces') <= limits.sauces;
+  const isBaconCorrect = categoryAmount('bacon') <= limits.bacon;
 
   if (
     isBunsCorrect
@@ -22,6 +23,7 @@ function validateBurgerComposition(burgerIngredients) {
     && isCheesesCorrect
     && isVegetablesCorrect
     && isSaucesCorrect
+    && isBaconCorrect
   ) return;
 
   if (!isBunsCorrect) throw new BadRequestError('burger must contain 1 bun');
@@ -29,6 +31,7 @@ function validateBurgerComposition(burgerIngredients) {
   if (!isCheesesCorrect) throw new BadRequestError('burger should not contain more than 3 servings of cheese');
   if (!isVegetablesCorrect) throw new BadRequestError('burger should not contain more than 3 servings of vegetable');
   if (!isSaucesCorrect) throw new BadRequestError('burger should not contain more than 3 servings of sauce');
+  if (!isBaconCorrect) throw new BadRequestError('burger should not contain more than 1 servings of bacon');
 }
 
 class BurgerService {
