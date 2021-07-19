@@ -1,6 +1,9 @@
 const Ingredient = require('../models/ingredient');
+const Burger = require('../models/burger');
+const NotFoundError = require('../erorrs/not-found-error');
+const ForbiddenError = require('../erorrs/forbidden-error');
 const BadRequestError = require('../erorrs/bad-request-error');
-const { burgerIngredientLimits: limits } = require('../utils');
+const { burgerIngredientLimits: limits, concatenateErrorMessages: concatErrs } = require('../utils');
 
 function validateBurgerComposition(burgerIngredients) {
   const categoryAmount = (category) => burgerIngredients.filter(
@@ -29,7 +32,19 @@ function validateBurgerComposition(burgerIngredients) {
 }
 
 class BurgerService {
-  static calculatePrice(ingredients) {
+  constructor(res, next) {
+    this.res = res;
+    this.next = next;
+  }
+
+  findUserBurgers(owner) {
+    Burger.find({ owner })
+      .populate('ingredients')
+      .then((burgers) => this.res.json(burgers))
+      .catch(this.next);
+  }
+
+  calculatePrice(ingredients) {
     return Ingredient.find({ _id: { $in: ingredients } })
       .then((foundIngredients) => {
         const burgerIngredients = ingredients.map(
@@ -41,7 +56,31 @@ class BurgerService {
         });
         validateBurgerComposition(burgerIngredients);
         return burgerIngredients.reduce((sum, current) => sum + current.price, 0);
+      })
+      .catch(this.next);
+  }
+
+  save(name, ingredients, price, owner) {
+    Burger.create({
+      name, ingredients, price, owner,
+    })
+      .then((burger) => this.res.json(burger))
+      .catch((err) => {
+        if (err.name === 'ValidationError') this.next(new BadRequestError(concatErrs(err)));
+        else if (err.kind === 'ObjectId') this.next(new BadRequestError('invalid ingredient ids'));
+        else this.next(err);
       });
+  }
+
+  delete(burgerId, userId) {
+    Burger.findById(burgerId)
+      .then((burger) => {
+        if (!burger) throw new NotFoundError('burger not found');
+        if (!burger.owner.equals(userId)) throw new ForbiddenError('only your burgers are allowed to delete');
+        return Burger.findByIdAndRemove(burgerId);
+      })
+      .then((removedBurger) => this.res.json(removedBurger))
+      .catch((err) => this.next(err.kind === 'ObjectId' ? new BadRequestError('invalid burger id') : err));
   }
 }
 

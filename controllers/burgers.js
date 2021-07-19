@@ -1,45 +1,25 @@
-const Burger = require('../models/burger');
-const BadRequestError = require('../erorrs/bad-request-error');
-const ForbiddenError = require('../erorrs/forbidden-error');
-const NotFoundError = require('../erorrs/not-found-error');
 const BurgerService = require('../services/BurgerService');
-const { concatenateErrorMessages } = require('../utils');
 
 module.exports.getBurgers = (req, res, next) => {
+  const service = new BurgerService(res, next);
   const owner = req.user._id;
 
-  Burger.find({ owner })
-    .populate('ingredients')
-    .then((burgers) => res.json(burgers))
-    .catch(next);
+  service.findUserBurgers(owner);
 };
 
 module.exports.saveBurger = (req, res, next) => {
+  const service = new BurgerService(res, next);
   const { name, ingredients } = req.body;
   const owner = req.user._id;
 
-  BurgerService.calculatePrice(ingredients)
-    .then((price) => Burger.create({
-      name, ingredients, price, owner,
-    }))
-    .then((burger) => res.json(burger))
-    .catch((err) => {
-      if (err.name === 'ValidationError') next(new BadRequestError(concatenateErrorMessages(err)));
-      else if (err.kind === 'ObjectId') next(new BadRequestError('invalid ingredient ids'));
-      else next(err);
-    });
+  service.calculatePrice(ingredients)
+    .then((price) => service.save(name, ingredients, price, owner));
 };
 
 module.exports.deleteBurger = (req, res, next) => {
+  const service = new BurgerService(res, next);
   const { burgerId } = req.params;
   const userId = req.user._id;
 
-  Burger.findById(burgerId)
-    .then((burger) => {
-      if (!burger) throw new NotFoundError('burger not found');
-      if (!burger.owner.equals(userId)) throw new ForbiddenError('only your burgers are allowed to delete');
-      return Burger.findByIdAndRemove(burgerId);
-    })
-    .then((removedBurger) => res.json(removedBurger))
-    .catch((err) => next(err.kind === 'ObjectId' ? new BadRequestError('invalid burger id') : err));
+  service.delete(burgerId, userId);
 };
