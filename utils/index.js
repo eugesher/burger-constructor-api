@@ -7,6 +7,7 @@ const burgerIngredientLimits = {
   sauces: 3,
   bacon: 1,
 };
+const ingredientCategories = Object.keys(burgerIngredientLimits);
 
 function getPrice(value) {
   return Number((value / 100).toFixed(2));
@@ -29,6 +30,7 @@ function concatenateErrorMessages(err) {
 module.exports = {
   schemaOptions,
   burgerIngredientLimits,
+  ingredientCategories,
   getPrice,
   setPrice,
   setName,

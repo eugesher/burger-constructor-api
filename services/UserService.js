@@ -5,7 +5,7 @@ const User = require('../models/user');
 const NotFoundError = require('../erorrs/not-found-error');
 const BadRequestError = require('../erorrs/bad-request-error');
 const ConflictError = require('../erorrs/conflict-error');
-const { concatenateErrorMessages } = require('../utils');
+const { concatenateErrorMessages: concatErrs } = require('../utils');
 
 class UserService {
   constructor(res, next) {
@@ -59,7 +59,7 @@ class UserService {
         if (err.code === 11000) {
           this.next(new ConflictError('email has already been registered'));
         } else if (err.name === 'ValidationError') {
-          this.next(new BadRequestError(concatenateErrorMessages(err)));
+          this.next(new BadRequestError(concatErrs(err)));
         } else {
           this.next(err);
         }

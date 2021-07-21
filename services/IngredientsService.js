@@ -1,6 +1,6 @@
 const Ingredient = require('../models/ingredient');
 const BadRequestError = require('../erorrs/bad-request-error');
-const { concatenateErrorMessages } = require('../utils');
+const { concatenateErrorMessages: concatErrs } = require('../utils');
 
 class IngredientsService {
   constructor(res, next) {
@@ -25,9 +25,9 @@ class IngredientsService {
     })
       .then((ingredient) => this.res.json(ingredient))
       .catch((err) => this.next(
-        err.name === 'ValidationError' ? new BadRequestError(concatenateErrorMessages(err)) : err,
+        err.name === 'ValidationError' ? new BadRequestError(concatErrs(err)) : err,
       ));
-  }
+  } // todo: handle 11000 error
 
   remove(ingredientId) {
     Ingredient.findByIdAndRemove(ingredientId)
@@ -42,7 +42,7 @@ class IngredientsService {
     Ingredient.findByIdAndUpdate(ingredientId, { quantity }, { new: true })
       .then((ingredient) => this.res.json(ingredient))
       .catch((err) => this.next(
-        err.name === 'ValidationError' ? new BadRequestError(concatenateErrorMessages(err)) : err,
+        err.name === 'ValidationError' ? new BadRequestError(concatErrs(err)) : err,
       ));
   }
 }

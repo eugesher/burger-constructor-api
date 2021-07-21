@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const {
-  schemaOptions, setName, getPrice, setPrice,
+  schemaOptions, ingredientCategories, setName, getPrice, setPrice,
 } = require('../utils');
 
 const schema = new mongoose.Schema(
@@ -16,7 +16,7 @@ const schema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['buns', 'cutlets', 'cheeses', 'vegetables', 'sauces', 'bacon'],
+      enum: ingredientCategories,
     },
     quantity: {
       type: Number,
