@@ -1,5 +1,6 @@
 const Ingredient = require('../models/ingredient');
 const BadRequestError = require('../erorrs/bad-request-error');
+const ConflictError = require('../erorrs/conflict-error');
 const { concatenateErrorMessages: concatErrs } = require('../utils');
 
 class IngredientsService {
@@ -24,10 +25,16 @@ class IngredientsService {
       price,
     })
       .then((ingredient) => this.res.json(ingredient))
-      .catch((err) => this.next(
-        err.name === 'ValidationError' ? new BadRequestError(concatErrs(err)) : err,
-      ));
-  } // todo: handle 11000 error
+      .catch((err) => {
+        if (err.code === 11000) {
+          this.next(new ConflictError('ingredient already exists'));
+        } else if (err.name === 'ValidationError') {
+          this.next(new BadRequestError(concatErrs(err)));
+        } else {
+          this.next(err);
+        }
+      });
+  }
 
   remove(ingredientId) {
     Ingredient.findByIdAndRemove(ingredientId)
