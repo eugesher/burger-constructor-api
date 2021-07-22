@@ -13,7 +13,6 @@ const NotFoundError = require('./erorrs/not-found-error');
 const errorHandler = require('./erorrs/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3000 } = process.env;
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/burgersdb', {
@@ -35,4 +34,4 @@ app.use(errors());
 app.use((req, res, next) => next(new NotFoundError('not found')));
 app.use(errorHandler);
 
-app.listen(PORT);
+module.exports = app;
