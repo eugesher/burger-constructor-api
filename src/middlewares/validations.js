@@ -57,8 +57,6 @@ module.exports.saveBurgerValidation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(100),
     ingredients: Joi.array().items(Joi.string().required().hex().length(24)).max(maxIngredients),
-    price: Joi.number().positive().required(),
-    owner: Joi.string().required().hex().length(24),
   }),
 });
 
@@ -73,7 +71,5 @@ module.exports.makeOrderValidation = celebrate({
   ...headersSchema,
   body: Joi.object().keys({
     list: Joi.array().items(Joi.string().required().hex().length(24)),
-    price: Joi.number().positive().required(),
-    owner: Joi.string().required().hex().length(24),
   }),
 });
